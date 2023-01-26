@@ -1,7 +1,9 @@
 import { Router } from "express"
-import { getUsers, updateUser, deleteUser } from "../handlers/user"
+import { getUser, getUsers, updateUser, deleteUser } from "../handlers/user"
 
 const app = Router()
+
+app.get("/user/:uuid", getUser)
 
 app.get("/user", getUsers)
 

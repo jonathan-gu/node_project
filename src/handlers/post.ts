@@ -1,5 +1,5 @@
 import { Request, RequestHandler } from "express"
-import { body, check, validationResult } from "express-validator";
+import { body, validationResult } from "express-validator";
 import db from "../db"
 
 interface TypedRequestParam extends Request {

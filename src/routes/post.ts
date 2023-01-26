@@ -5,7 +5,7 @@ const app = Router()
 
 app.post("/post", createPost)
 
-app.get("/post:uuid", getPost)
+app.get("/post/:uuid", getPost)
 
 app.get("/post", getPosts)
 

@@ -75,6 +75,12 @@ export const signIn: RequestHandler = async (req: TypedRequestParam, res) => {
 
 export const getUser: RequestHandler = async (req: TypedRequestParam, res) => {
     try {
+        if (req.user.role !== "admin") {
+            if (req.user.id !== req.params.uuid) {
+                return res.status(400).json({ message: "Not Authorize" })
+            }
+        }
+
         const users = await db.user.findUnique({
             where: {
                 id: req.params.uuid
@@ -82,7 +88,7 @@ export const getUser: RequestHandler = async (req: TypedRequestParam, res) => {
         })
         return res.status(200).json(users)
     } catch (e) {
-        return res.status(400).json({ error: e || 'Cannot create todoList' })
+        return res.status(400).json({ error: e })
     }
 }
 

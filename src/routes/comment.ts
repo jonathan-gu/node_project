@@ -5,7 +5,7 @@ const app = Router()
 
 app.post("/comment", createComment)
 
-app.get("/comment:uuid", getComment)
+app.get("/comment/:uuid", getComment)
 
 app.get("/comment", getComments)
 
