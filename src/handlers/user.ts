@@ -113,6 +113,9 @@ export const updateUser: RequestHandler = async (req: TypedRequestParam, res) =>
             if (!user) {
                 throw new Error("The user doesn't exists")
             }
+            if (req.params.uuid !== req.user.id) {
+                throw new Error("Not Authorize")
+            }
             let hash = user.password
             if (body("password").exists().isString().notEmpty()) {
                 hash = await hashPassword(req.body?.password as string)
@@ -132,12 +135,18 @@ export const updateUser: RequestHandler = async (req: TypedRequestParam, res) =>
             throw new Error("No data to modify")
         }
     } catch (e) {
-        return res.status(400).json({ message: e || "Error while updating" })
+        return res.status(400).json({ message: e + "" })
     }
 }
 
 export const deleteUser: RequestHandler = async (req: TypedRequestParam, res) => {
     try {
+        if (req.user.id !== req.params.uuid) {
+            if (req.user.role !== "admin") {
+                return res.status(400).json({ message: "Not Authorize" })
+            }
+        }
+
         const user = await db.user.delete({
             where: {
                 id: req.params.uuid
