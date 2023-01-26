@@ -93,6 +93,9 @@ export const getUser: RequestHandler = async (req: TypedRequestParam, res) => {
 }
 
 export const getUsers: RequestHandler = async (req: TypedRequestParam, res) => {
+    if (req.user.role !== "admin") {
+        return res.status(400).json({ message: "Not Authorize" })
+    }
     const users = await db.user.findMany({
     })
     return res.status(200).json(users)
