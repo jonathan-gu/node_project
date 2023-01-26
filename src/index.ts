@@ -3,6 +3,7 @@ import * as dotenv from "dotenv"
 import userPublicRoutes from "./routes/userPublic"
 import userProtectRoutes from "./routes/userProtect"
 import postRoutes from "./routes/post"
+import commentRoutes from "./routes/comment"
 import { protect } from "./modules/auth"
 import config from "./config"
 
@@ -19,7 +20,8 @@ app.use("/api", [
 
 app.use("/api", protect, [
     userProtectRoutes,
-    postRoutes
+    postRoutes,
+    commentRoutes
 ])
 
 app.listen(port, () => {

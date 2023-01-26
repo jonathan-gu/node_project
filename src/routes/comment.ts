@@ -1,14 +1,16 @@
 import { Router } from "express"
-import { createPost, getPosts, updatePost, deletePost } from "../handlers/post"
+import { createComment, getComment, getComments, updateComment, deleteComment } from "../handlers/comment"
 
 const app = Router()
 
-app.post("/post", createPost)
+app.post("/comment", createComment)
 
-app.get("/post", getPosts)
+app.get("/comment:uuid", getComment)
 
-app.put("/post/:uuid", updatePost)
+app.get("/comment", getComments)
 
-app.delete("/post/:uuid", deletePost)
+app.put("/comment/:uuid", updateComment)
+
+app.delete("/comment/:uuid", deleteComment)
 
 export default app

@@ -8,7 +8,7 @@ interface TypedRequestParam extends Request {
     }
 }
 
-export const createPost: RequestHandler = async (req: TypedRequestParam, res) => {
+export const createComment: RequestHandler = async (req: TypedRequestParam, res) => {
     try {
         if (!body("content").exists().isString().notEmpty()) {
             throw new Error("Invalid body provided")

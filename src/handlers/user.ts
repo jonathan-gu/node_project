@@ -16,19 +16,25 @@ export const createUser: RequestHandler = async (req: TypedRequestParam, res) =>
         if (!(body("username").exists().isString().notEmpty() && body("password").exists().isString().notEmpty() && body("role").exists().isString().notEmpty())) {
             throw new Error("Invalid body provided")
         }
+        if (req.body.role === "user" || req.body.role === "admin") {
+            const hash = await hashPassword(req.body.password as string)
 
-        const hash = await hashPassword(req.body.password as string)
+            const user = await db.user.create({
+                data: {
+                    username: req.body.username as string,
+                    password: hash,
+                    role: req.body.role as string
+                }
+            })
+            const token = createJWT(user)
 
-        const user = await db.user.create({
-            data: {
-                username: req.body.username as string,
-                password: hash,
-                role: req.body.role as string
-            }
-        })
-        const token = createJWT(user)
+            return res.status(201).json({ token })
 
-        return res.status(201).json({ token })
+        }
+        else {
+            throw new Error("Invalid body provided")
+        }
+
     } catch (e) {
         res.status(400).json({ error: e?.toString() })
     }
