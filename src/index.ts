@@ -1,6 +1,8 @@
 import express from "express"
 import * as dotenv from "dotenv"
-import userRoutes from "./routes/user"
+import userPublicRoutes from "./routes/userPublic"
+import userProtectRoutes from "./routes/userProtect"
+import postRoutes from "./routes/post"
 import { protect } from "./modules/auth"
 import config from "./config"
 
@@ -11,12 +13,13 @@ const port = config.port
 
 app.use(express.json())
 
-app.use("/", [
-    userRoutes
+app.use("/api", [
+    userPublicRoutes
 ])
 
-app.use("/", protect, [
-
+app.use("/api", protect, [
+    userProtectRoutes,
+    postRoutes
 ])
 
 app.listen(port, () => {

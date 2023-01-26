@@ -1,9 +1,9 @@
 import { Router } from "express"
-import { signUp, signIn } from "../handlers/user"
+import { createUser, signIn } from "../handlers/user"
 
 const app = Router()
 
-app.post("/signUp", signUp)
+app.post("/signUp", createUser)
 
 app.post("/signIn", signIn)
 
