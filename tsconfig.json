@@ -9,7 +9,7 @@
         ],
         "esModuleInterop": true,
         "typeRoots": [
-            "./src/types"
+            "./src/types/"
         ]
     },
     "include": [
