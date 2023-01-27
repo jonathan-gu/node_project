@@ -1,11 +1,12 @@
 import { Request, RequestHandler } from "express"
-import { body, validationResult } from "express-validator";
+import { body, query, validationResult } from "express-validator";
 import db from "../db"
 
 interface TypedRequestParam extends Request {
     body: {
         title?: string
         description?: string
+        created_at?: string
     }
 }
 
@@ -45,9 +46,28 @@ export const getPost: RequestHandler = async (req: TypedRequestParam, res) => {
 }
 
 export const getPosts: RequestHandler = async (req: TypedRequestParam, res) => {
-    const posts = await db.post.findMany({
-    })
-    return res.status(200).json(posts)
+    try {
+        if (req.query.from !== undefined) {
+            const timestamps = Number(req.query.from) * 1000
+            const from = new Date(timestamps)
+            const posts = await db.post.findMany({
+                where: {
+                    created_at: {
+                        gte: from
+                    }
+                },
+            });
+            return res.status(200).json(posts)
+        }
+        else {
+            console.log(2)
+            const posts = await db.post.findMany({
+            })
+            return res.status(200).json(posts)
+        }
+    } catch (err) {
+        return res.status(400).json({ message: 'Not found' })
+    }
 }
 
 export const updatePost: RequestHandler = async (req: TypedRequestParam, res) => {
