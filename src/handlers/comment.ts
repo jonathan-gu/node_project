@@ -1,5 +1,5 @@
 import { Request, RequestHandler } from "express"
-import { body, check, validationResult } from "express-validator";
+import { body, validationResult } from "express-validator";
 import db from "../db"
 
 interface TypedRequestParam extends Request {
@@ -10,10 +10,7 @@ interface TypedRequestParam extends Request {
 
 export const createComment: RequestHandler = async (req: TypedRequestParam, res) => {
     try {
-        if (!body("content").exists().isString().notEmpty()) {
-            throw new Error("Invalid body provided")
-        }
-
+        validationResult(req).throw()
         const comment = await db.comment.create({
             data: {
                 content: req.body.content as string,
@@ -83,21 +80,22 @@ export const updateComment: RequestHandler = async (req: TypedRequestParam, res)
 export const deleteComment: RequestHandler = async (req: TypedRequestParam, res) => {
     try {
         let deletedPost
-        if (req.user?.id && body("id").exists().isString().notEmpty()) {
-            const post = await db.post.findUnique({
-                where: {
-                    id: req.params?.uuid
+        if (req.user.role !== "admin") {
+            if (req.user?.id && body("id").exists().isString().notEmpty()) {
+                const post = await db.post.findUnique({
+                    where: {
+                        id: req.params?.uuid
+                    }
+                })
+                if (post?.userId !== req.user.id) {
+                    throw new Error("Not Authorize")
+
                 }
-            })
-            if (post?.userId === req.user.id) {
                 deletedPost = await db.post.delete({
                     where: {
                         id: req.params.uuid
                     }
                 })
-            }
-            else {
-                throw new Error("Not Authorize")
             }
         }
         else {

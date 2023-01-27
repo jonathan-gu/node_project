@@ -3,11 +3,11 @@ import { createComment, getComment, getComments, updateComment, deleteComment } 
 
 const app = Router()
 
-app.post("/comment", createComment)
+app.post("/comment/:uuid", createComment)
 
 app.get("/comment/:uuid", getComment)
 
-app.get("/comment", getComments)
+app.get("/comments:uuid", getComments)
 
 app.put("/comment/:uuid", updateComment)
 
