@@ -50,8 +50,6 @@ export const getPosts: RequestHandler = async (req: TypedRequestParam, res) => {
     return res.status(200).json(posts)
 }
 
-
-
 export const updatePost: RequestHandler = async (req: TypedRequestParam, res) => {
     try {
         validationResult(req).throw()
@@ -82,7 +80,7 @@ export const updatePost: RequestHandler = async (req: TypedRequestParam, res) =>
             throw new Error("No data to modify")
         }
     } catch (e) {
-        return res.status(400).json({ message: e || "Error while updating" })
+        return res.status(400).json({ message: e + "" })
     }
 }
 
@@ -90,27 +88,27 @@ export const deletePost: RequestHandler = async (req: TypedRequestParam, res) =>
     try {
         let deletedPost
         if (body("id").exists().isString().notEmpty()) {
-            const post = await db.post.findUnique({
-                where: {
-                    id: req.params?.uuid
-                }
-            })
-            if (post?.userId === req.user.id) {
-                deletedPost = await db.post.delete({
+            if (req.user.role !== "admin") {
+                const post = await db.post.findUnique({
                     where: {
-                        id: req.params.uuid
+                        id: req.params?.uuid
                     }
                 })
+                if (post?.userId !== req.user.id) {
+                    throw new Error("Not Authorize")
+                }
             }
-            else {
-                throw new Error("Not Authorize")
-            }
+            deletedPost = await db.post.delete({
+                where: {
+                    id: req.params.uuid
+                }
+            })
         }
         else {
             throw new Error("This post doesn't exists")
         }
-        return res.status(200).json({ message: "Succesfully deleted " + deletedPost })
+        return res.status(200).json({ message: "Succesfully deleted " + deletedPost.title })
     } catch (e) {
-        return res.status(400).json({ message: e || "Error while deleting" })
+        return res.status(400).json({ message: e + "" })
     }
 }
