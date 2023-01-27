@@ -7,7 +7,7 @@ app.post("/comment/:uuid", createComment)
 
 app.get("/comment/:uuid", getComment)
 
-app.get("/comments:uuid", getComments)
+app.get("/comment", getComments)
 
 app.put("/comment/:uuid", updateComment)
 
